@@ -6,101 +6,291 @@
     <title>Hibachi Tip Report Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Jaini&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #6D071A; /* Keeping your original background color */
+            --secondary-color: #b22222;
+            --text-color: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
             font-family: 'Jaini', sans-serif;
             text-align: center;
-            background-color: #6D071A;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--light-text);
             margin: 0;
             padding: 20px;
+            line-height: 1.6;
         }
+        
         h1 {
-            font-size: 2.5em;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
+        
         .container {
             background: white;
-            color: black;
-            padding: 20px;
-            max-width: 500px;
+            color: var(--text-color);
+            padding: 25px;
+            max-width: 550px;
             margin: 20px auto;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
         }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        label {
+            flex: 1;
+            text-align: left;
+            font-size: 1.1em;
+            font-weight: 600;
+            padding-right: 10px;
+        }
+        
         input {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
             text-align: right;
+            font-size: 1.1em;
+            transition: border 0.3s ease;
         }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(178, 34, 34, 0.3);
+        }
+        
+        .prefix {
+            position: relative;
+        }
+        
+        .prefix input {
+            padding-left: 25px;
+        }
+        
+        .prefix::before {
+            content: "$";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            z-index: 1;
+        }
+        
         button {
-            background-color: #b22222;
+            background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 10px;
-            margin-top: 10px;
+            padding: 14px;
+            margin: 20px 0;
             width: 100%;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-size: 1.2em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
+        
         button:hover {
             background-color: #8b1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
         .result {
-            font-weight: bold;
-            margin-top: 10px;
-            text-align: right;
-            font-size: 1.5em;
+            margin-top: 20px;
+            text-align: left;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
         }
-        label {
-            display: block;
-            text-align: right;
-            font-size: 1.5em;
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .result-item.highlight {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: var(--secondary-color);
+            border-bottom: 2px solid #f0f0f0;
+            padding: 8px 0;
+            margin-top: 8px;
+        }
+        
+        .hide {
+            display: none;
+        }
+        
+        .summary-toggle {
+            background: none;
+            color: var(--secondary-color);
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 0;
+            padding: 5px;
+            text-decoration: underline;
+            font-weight: 600;
+            box-shadow: none;
+        }
+        
+        .summary-toggle:hover {
+            color: #8b1a1a;
+            background: none;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .detailed-results {
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            label {
+                text-align: left;
+                margin-bottom: 5px;
+            }
+            
+            input {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Hibachi Tip Report Calculator</h1>
     <div class="container">
-        <label>Total Cash:</label>
-        <input type="number" id="totalCash" value="0">
+        <div class="input-group">
+            <label for="totalCash">Total Cash:</label>
+            <div class="prefix">
+                <input type="number" id="totalCash" value="" min="0" step="0.01" placeholder="0.00">
+            </div>
+        </div>
 
-        <label>Charge Sales:</label>
-        <input type="number" id="chargeSales" value="0">
+        <div class="input-group">
+            <label for="chargeSales">Charge Sales:</label>
+            <div class="prefix">
+                <input type="number" id="chargeSales" value="" min="0" step="0.01" placeholder="0.00">
+            </div>
+        </div>
 
-        <label>Cash Sales:</label>
-        <input type="number" id="cashSales" value="0">
+        <div class="input-group">
+            <label for="cashSales">Cash Sales:</label>
+            <div class="prefix">
+                <input type="number" id="cashSales" value="" min="0" step="0.01" placeholder="0.00">
+            </div>
+        </div>
 
-        <label>Liquor Sales:</label>
-        <input type="number" id="liquorSales" value="0">
+        <div class="input-group">
+            <label for="liquorSales">Liquor Sales:</label>
+            <div class="prefix">
+                <input type="number" id="liquorSales" value="" min="0" step="0.01" placeholder="0.00">
+            </div>
+        </div>
 
-        <label>Charge Tips:</label>
-        <input type="number" id="chargeTips" value="0">
+        <div class="input-group">
+            <label for="chargeTips">Charge Tips:</label>
+            <div class="prefix">
+                <input type="number" id="chargeTips" value="" min="0" step="0.01" placeholder="0.00">
+            </div>
+        </div>
 
-        <label>Service Charge Tips:</label>
-        <input type="number" id="serviceChargeTips" value="0">
+        <div class="input-group">
+            <label for="serviceChargeTips">Service Charge Tips:</label>
+            <div class="prefix">
+                <input type="number" id="serviceChargeTips" value="" min="0" step="0.01" placeholder="0.00">
+            </div>
+        </div>
 
-        <button onclick="calculateTips()">Calculate</button>
-        <div class="result" id="output"></div>
+        <button id="calculateBtn" onclick="calculateTips()">Calculate Tips</button>
+        
+        <div class="result hide" id="output">
+            <!-- Summary results shown by default -->
+            <div id="summary-results">
+                <div class="result-item highlight">
+                    <span>Total Tips Report:</span>
+                    <span id="summary-tips-report"></span>
+                </div>
+                <div class="result-item highlight">
+                    <span>Total Payout:</span>
+                    <span id="summary-total-payout"></span>
+                </div>
+            </div>
+            
+            <button class="summary-toggle" id="toggle-details">Show Detailed Breakdown</button>
+            
+            <!-- Detailed results hidden by default -->
+            <div class="detailed-results hide" id="detailed-results"></div>
+        </div>
     </div>
 
     <script>
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', { 
+                style: 'currency', 
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(value);
+        }
+        
         function roundValue(value) {
             return Math.round(value);
         }
 
         function calculateTips() {
-            let a = parseFloat(document.getElementById("totalCash").value);
-            let b = parseFloat(document.getElementById("chargeSales").value);
-            let c = parseFloat(document.getElementById("cashSales").value);
-            let d = parseFloat(document.getElementById("liquorSales").value);
-            let e = parseFloat(document.getElementById("chargeTips").value);
-            let f = parseFloat(document.getElementById("serviceChargeTips").value);
+            // Get input values
+            // Get input values (ensuring empty values are treated as 0)
+            let a = parseFloat(document.getElementById("totalCash").value) || 0;
+            let b = parseFloat(document.getElementById("chargeSales").value) || 0;
+            let c = parseFloat(document.getElementById("cashSales").value) || 0;
+            let d = parseFloat(document.getElementById("liquorSales").value) || 0;
+            let e = parseFloat(document.getElementById("chargeTips").value) || 0;
+            let f = parseFloat(document.getElementById("serviceChargeTips").value) || 0;
 
+            // Perform calculations
             let netSales = b + c;
-            let chargeTips = e + roundValue(f * 0.9225);
+            let serviceChargeTipsAdjusted = roundValue(f * 0.9225);
+            let chargeTips = e + serviceChargeTipsAdjusted;
             let cashTips = a - c;
             let netTips = chargeTips + cashTips;
             let liquorTips = roundValue(d * 0.10);
@@ -116,30 +306,129 @@
             let cashDue = c - chargeTips;
             let totalPayout = cashDue + totalTipsPayout;
 
-            document.getElementById("output").innerHTML = `
-                <p>1. Total Cash: $${a}</p>
-                <p>2. Charge Sales: $${b}</p>
-                <p>3. Cash Sales: $${c}</p>
-                <p>4. Net Sales: $${netSales}</p>
-                <p>5. Liquor Sales: $${d}</p>
-                <p>6. Charge Tips: $${chargeTips}</p>
-                <p>7. Cash Tips: $${cashTips}</p>
-                <p>8. Service Charge Tips: $${roundValue(f * 0.9225)}</p>
-                <p>9. Net Tips: $${netTips}</p>
-                <p>10. Liquor Tips: $${liquorTips}</p>
-                <p>11. Subtotal 1: $${subtotal1}</p>
-                <p>12. Chef Tip: $${chefTip}</p>
-                <p>13. Server Tip: $${serverTip}</p>
-                <p>14. Net Tips Final: $${netTipsFinal}</p>
-                <p>15. Bar Tips: $${barTips}</p>
-                <p>16. Subtotal 2: $${subtotal2}</p>
-                <p>17. DRA Tips: $${draTips}</p>
-                <p>18. Total Tips Report: $${totalTipsReport}</p>
-                <p>19. Total Tips Payout: $${totalTipsPayout}</p>
-                <p>20. Cash Due: $${cashDue}</p>
-                <p>21. Total Payout: $${totalPayout}</p>
+            // Format summary results
+            document.getElementById("summary-tips-report").textContent = formatCurrency(totalTipsReport);
+            document.getElementById("summary-total-payout").textContent = formatCurrency(totalPayout);
+            
+            // Generate detailed results
+            const detailedHtml = `
+                <div class="result-item">
+                    <span>1. Total Cash:</span>
+                    <span>${formatCurrency(a)}</span>
+                </div>
+                <div class="result-item">
+                    <span>2. Charge Sales:</span>
+                    <span>${formatCurrency(b)}</span>
+                </div>
+                <div class="result-item">
+                    <span>3. Cash Sales:</span>
+                    <span>${formatCurrency(c)}</span>
+                </div>
+                <div class="result-item">
+                    <span>4. Net Sales:</span>
+                    <span>${formatCurrency(netSales)}</span>
+                </div>
+                <div class="result-item">
+                    <span>5. Liquor Sales:</span>
+                    <span>${formatCurrency(d)}</span>
+                </div>
+                <div class="result-item">
+                    <span>6. Charge Tips:</span>
+                    <span>${formatCurrency(e)}</span>
+                </div>
+                <div class="result-item">
+                    <span>7. Service Charge Tips (Adjusted):</span>
+                    <span>${formatCurrency(serviceChargeTipsAdjusted)}</span>
+                </div>
+                <div class="result-item">
+                    <span>8. Total Charge Tips:</span>
+                    <span>${formatCurrency(chargeTips)}</span>
+                </div>
+                <div class="result-item">
+                    <span>9. Cash Tips:</span>
+                    <span>${formatCurrency(cashTips)}</span>
+                </div>
+                <div class="result-item">
+                    <span>10. Net Tips:</span>
+                    <span>${formatCurrency(netTips)}</span>
+                </div>
+                <div class="result-item">
+                    <span>11. Liquor Tips (10%):</span>
+                    <span>${formatCurrency(liquorTips)}</span>
+                </div>
+                <div class="result-item">
+                    <span>12. Subtotal 1:</span>
+                    <span>${formatCurrency(subtotal1)}</span>
+                </div>
+                <div class="result-item">
+                    <span>13. Chef Tip (50%):</span>
+                    <span>${formatCurrency(chefTip)}</span>
+                </div>
+                <div class="result-item">
+                    <span>14. Server Tip:</span>
+                    <span>${formatCurrency(serverTip)}</span>
+                </div>
+                <div class="result-item">
+                    <span>15. Net Tips Final:</span>
+                    <span>${formatCurrency(netTipsFinal)}</span>
+                </div>
+                <div class="result-item">
+                    <span>16. Bar Tips (5%):</span>
+                    <span>${formatCurrency(barTips)}</span>
+                </div>
+                <div class="result-item">
+                    <span>17. Subtotal 2:</span>
+                    <span>${formatCurrency(subtotal2)}</span>
+                </div>
+                <div class="result-item">
+                    <span>18. DRA Tips (16%):</span>
+                    <span>${formatCurrency(draTips)}</span>
+                </div>
+                <div class="result-item highlight">
+                    <span>19. Total Tips Report:</span>
+                    <span>${formatCurrency(totalTipsReport)}</span>
+                </div>
+                <div class="result-item">
+                    <span>20. Total Tips Payout:</span>
+                    <span>${formatCurrency(totalTipsPayout)}</span>
+                </div>
+                <div class="result-item">
+                    <span>21. Cash Due:</span>
+                    <span>${formatCurrency(cashDue)}</span>
+                </div>
+                <div class="result-item highlight">
+                    <span>22. Total Payout:</span>
+                    <span>${formatCurrency(totalPayout)}</span>
+                </div>
             `;
+            
+            document.getElementById("detailed-results").innerHTML = detailedHtml;
+            document.getElementById("output").classList.remove("hide");
         }
+        
+        // Set up toggle functionality
+        document.getElementById("toggle-details").addEventListener("click", function() {
+            const detailedResults = document.getElementById("detailed-results");
+            const toggleButton = document.getElementById("toggle-details");
+            
+            if (detailedResults.classList.contains("hide")) {
+                detailedResults.classList.remove("hide");
+                toggleButton.textContent = "Hide Detailed Breakdown";
+            } else {
+                detailedResults.classList.add("hide");
+                toggleButton.textContent = "Show Detailed Breakdown";
+            }
+        });
+        
+        // Add event listeners for Enter key
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculateTips();
+                }
+            });
+        });
     </script>
 </body>
 </html>
