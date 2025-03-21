@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hibachi Tip Report Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jaini&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Jaini', sans-serif;
+            text-align: center;
+            background-color: #6D071A;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        .container {
+            background: white;
+            color: black;
+            padding: 20px;
+            max-width: 500px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: right;
+        }
+        button {
+            background-color: #b22222;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        button:hover {
+            background-color: #8b1a1a;
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: right;
+            font-size: 1.5em;
+        }
+        label {
+            display: block;
+            text-align: right;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hibachi Tip Report Calculator</h1>
+    <div class="container">
+        <label>Total Cash:</label>
+        <input type="number" id="totalCash" value="0">
+
+        <label>Charge Sales:</label>
+        <input type="number" id="chargeSales" value="0">
+
+        <label>Cash Sales:</label>
+        <input type="number" id="cashSales" value="0">
+
+        <label>Liquor Sales:</label>
+        <input type="number" id="liquorSales" value="0">
+
+        <label>Charge Tips:</label>
+        <input type="number" id="chargeTips" value="0">
+
+        <label>Service Charge Tips:</label>
+        <input type="number" id="serviceChargeTips" value="0">
+
+        <button onclick="calculateTips()">Calculate</button>
+        <div class="result" id="output"></div>
+    </div>
+
+    <script>
+        function roundValue(value) {
+            return Math.round(value);
+        }
+
+        function calculateTips() {
+            let a = parseFloat(document.getElementById("totalCash").value);
+            let b = parseFloat(document.getElementById("chargeSales").value);
+            let c = parseFloat(document.getElementById("cashSales").value);
+            let d = parseFloat(document.getElementById("liquorSales").value);
+            let e = parseFloat(document.getElementById("chargeTips").value);
+            let f = parseFloat(document.getElementById("serviceChargeTips").value);
+
+            let netSales = b + c;
+            let chargeTips = e + roundValue(f * 0.9225);
+            let cashTips = a - c;
+            let netTips = chargeTips + cashTips;
+            let liquorTips = roundValue(d * 0.10);
+            let subtotal1 = netTips - liquorTips;
+            let chefTip = roundValue(subtotal1 * 0.5);
+            let serverTip = subtotal1 - chefTip;
+            let netTipsFinal = serverTip + liquorTips;
+            let barTips = roundValue(d * 0.05);
+            let subtotal2 = netTipsFinal - barTips;
+            let draTips = roundValue(subtotal2 * 0.16);
+            let totalTipsReport = subtotal2 - draTips;
+            let totalTipsPayout = chefTip + draTips;
+            let cashDue = c - chargeTips;
+            let totalPayout = cashDue + totalTipsPayout;
+
+            document.getElementById("output").innerHTML = `
+                <p>1. Total Cash: $${a}</p>
+                <p>2. Charge Sales: $${b}</p>
+                <p>3. Cash Sales: $${c}</p>
+                <p>4. Net Sales: $${netSales}</p>
+                <p>5. Liquor Sales: $${d}</p>
+                <p>6. Charge Tips: $${chargeTips}</p>
+                <p>7. Cash Tips: $${cashTips}</p>
+                <p>8. Service Charge Tips: $${roundValue(f * 0.9225)}</p>
+                <p>9. Net Tips: $${netTips}</p>
+                <p>10. Liquor Tips: $${liquorTips}</p>
+                <p>11. Subtotal 1: $${subtotal1}</p>
+                <p>12. Chef Tip: $${chefTip}</p>
+                <p>13. Server Tip: $${serverTip}</p>
+                <p>14. Net Tips Final: $${netTipsFinal}</p>
+                <p>15. Bar Tips: $${barTips}</p>
+                <p>16. Subtotal 2: $${subtotal2}</p>
+                <p>17. DRA Tips: $${draTips}</p>
+                <p>18. Total Tips Report: $${totalTipsReport}</p>
+                <p>19. Total Tips Payout: $${totalTipsPayout}</p>
+                <p>20. Cash Due: $${cashDue}</p>
+                <p>21. Total Payout: $${totalPayout}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
