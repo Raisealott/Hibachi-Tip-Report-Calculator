@@ -259,7 +259,7 @@
             let netTips = chargeTips + cashTips;
             let liquorTips = roundValue(d * 0.10);
             let subtotal1 = netTips - liquorTips;
-            let chefTip = roundValue(subtotal1 * 0.5);
+            let chefTip = Math.floor(subtotal1 * 0.5);
             let serverTip = subtotal1 - chefTip;
             let netTipsFinal = serverTip + liquorTips;
             let barTips = roundValue(d * 0.05);
